@@ -502,7 +502,7 @@ LCPcompare0 <- function(xtrain, ytrain, xcalibration, ycalibration,
 
 #' sim_data_generator_1D_example2 - generate 1D simulated data for example2
 #'@export
-sim_data_generator_1D_example2 <- function(sim_name, n = 1000, n0 = 1000, m = 1000, alpha = 0.05){
+sim_data_generator_1D_example2 <- function(sim_name, n = 1000, n0 = 1000, m = 1000, alpha){
   if(sim_name == "1D_setA"){
     #sin
     noise_generating = function(x){
