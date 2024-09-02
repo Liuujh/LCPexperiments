@@ -198,7 +198,7 @@ compute_jacobian_autograd = function(inputs, outputs){
     }
     grad_output$zero_()
     grad_output[,i] = 1
-    outputs$backward(grad_output, keep_graph = TRUE)
+    outputs$backward(grad_output, retain_graph = TRUE)
     jacobian[i,,] = inputs$grad$data()
   }
   return(torch_transpose(jacobian, dim0 = 1, dim1 = 2))
