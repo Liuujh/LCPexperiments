@@ -12,7 +12,7 @@ library(LCP)
 #'@importFrom torch optim_adam
 #'@export
 LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
-                       xtest, ytest, alpha, 
+                       xtest, ytest, alpha = 0.05, 
                        quantiles = c(0.025, 0.05, 0.1, 0.9 ,0.95, 0.975,), 
                        nfolds = 3, random_state = 1,
                        save_path = NULL, print_out = 10, epochs = 50){
@@ -347,7 +347,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
 #'@import LCP
 #'@export
 LCPcompare0 <- function(xtrain, ytrain, xcalibration, ycalibration,
-                       xtest, ytest, alpha, 
+                       xtest, ytest, alpha = 0.05, 
                        quantiles = c(0.025, 0.05, 0.1, 0.9 ,0.95, 0.975,), 
                        nfolds = 3, random_state = 1,
                        save_path = NULL, print_out = 10, epochs = 50){
@@ -502,7 +502,7 @@ LCPcompare0 <- function(xtrain, ytrain, xcalibration, ycalibration,
 
 #' sim_data_generator_1D_example2 - generate 1D simulated data for example2
 #'@export
-sim_data_generator_1D_example2 <- function(sim_name, n = 1000, n0 = 1000, m = 1000, alpha){
+sim_data_generator_1D_example2 <- function(sim_name, n = 1000, n0 = 1000, m = 1000, alpha = 0.05){
   if(sim_name == "1D_setA"){
     #sin
     noise_generating = function(x){
@@ -549,7 +549,7 @@ sim_data_generator_1D_example2 <- function(sim_name, n = 1000, n0 = 1000, m = 10
 
 #' sim_data_generator_1D_example1 - generate 1D simulated data for example1
 #'@export
-sim_data_generator_1D_example1 <- function(sim_name, n = 1000, n0 = 1000, m = 1000, alpha){
+sim_data_generator_1D_example1 <- function(sim_name, n = 1000, n0 = 1000, m = 1000, alpha = 0.05){
   if(sim_name == "1D_setA"){
     #sin
     noise_generating = function(x){
