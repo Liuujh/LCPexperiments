@@ -80,7 +80,8 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
 
   #CR, CLR
   deltaCP = quantile(observed_sds[[2]] , 1-alpha)
-  lens[1] =deltaCP*2
+  lens[1] = deltaCP*2
+  Inflens[1] = mean(deltaCP == Inf)
   sdlens[1] = sd(deltaCP)*2
   coverages[1] = mean(observed_sds[[3]]<=deltaCP)
   sdcov[1] = sd(observed_sds[[3]]<=deltaCP)
@@ -89,6 +90,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   
   deltaCP =  quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha)
   lens[3] = mean(deltaCP*estimated_sds[[3]]*2)
+  Inflens[3] = mean(deltaCP == Inf)
   sdlens[3] = sd(deltaCP*estimated_sds[[3]]*2)
   coverages[3] = mean( observed_sds[[3]]<=(deltaCP * estimated_sds[[3]]))
   sdcov[3] = sd( observed_sds[[3]]<=(deltaCP * estimated_sds[[3]]))
@@ -234,6 +236,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   coverages[5] =mean(ytest[,1]<= qU & ytest[,1] >=qL)
   sdcov[5] = sd(ytest[,1]<= qU & ytest[,1] >=qL)
   lens[5] = mean(qU - qL)
+  Inflens[5] = mean(qU - qL == Inf)
   sdlens[5] = sd(qU - qL)
   PIbands[,1,5] = qL
   PIbands[,2,5] = qU
@@ -261,6 +264,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   coverages[7] =mean(ytest[,1]<= qU & ytest[,1] >=qL)
   sdcov[7] = sd(ytest[,1]<= qU & ytest[,1] >=qL)
   lens[7] = mean(qU - qL)
+  Inflens[7] = mean(qU - qL == Inf)
   sdlens[7] = sd(qU - qL)
   PIbands[,1,7] = qL
   PIbands[,2,7] = qU
