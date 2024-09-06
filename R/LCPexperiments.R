@@ -83,6 +83,8 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   lens[1] = deltaCP*2
   Inflens[1] = mean(deltaCP == Inf)
   sdlens[1] = sd(deltaCP)*2
+  if (length(unique(deltaCP)) == 1) {
+    sdlens[1] = 0}
   coverages[1] = mean(observed_sds[[3]]<=deltaCP)
   sdcov[1] = sd(observed_sds[[3]]<=deltaCP)
   PIbands[,1,1] = yhat_te[,1]-deltaCP
