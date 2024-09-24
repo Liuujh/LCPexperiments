@@ -12,7 +12,7 @@ library(LCP)
 #'@importFrom torch optim_adam
 #'@export
 LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
-                       xtest, ytest, alpha, 
+                       xtest, ytest, alpha = 0.05, 
                        quantiles = c(0.025, 0.05, 0.1, 0.9 ,0.95, 0.975,), 
                        nfolds = 3, random_state = 1,
                        save_path = NULL, print_out = 10, epochs = 50){
@@ -80,22 +80,14 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
 
   #CR, CLR
   deltaCP = quantile(observed_sds[[2]] , 1-alpha)
-  lens[1] = deltaCP*2
-  Inflens[1] = mean(deltaCP == Inf)
-  sdlens[1] = sd(deltaCP)*2
-  if (length(unique(deltaCP)) == 1) {
-    sdlens[1] = 0}
-  coverages[1] = mean(observed_sds[[3]]<=deltaCP)
-  sdcov[1] = sd(observed_sds[[3]]<=deltaCP)
+  lens[1] =deltaCP*2
+  coverages[1] = mean( observed_sds[[3]]<=deltaCP)
   PIbands[,1,1] = yhat_te[,1]-deltaCP
   PIbands[,2,1] = yhat_te[,1]+deltaCP
   
   deltaCP =  quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha)
-  lens[3] = mean(deltaCP*estimated_sds[[3]]*2)
-  Inflens[3] = mean(deltaCP == Inf)
-  sdlens[3] = sd(deltaCP*estimated_sds[[3]]*2)
+  lens[3] =mean(deltaCP*estimated_sds[[3]]*2)
   coverages[3] = mean( observed_sds[[3]]<=(deltaCP * estimated_sds[[3]]))
-  sdcov[3] = sd( observed_sds[[3]]<=(deltaCP * estimated_sds[[3]]))
   PIbands[,1,3] = yhat_te[,1]-deltaCP* estimated_sds[[3]]
   PIbands[,2,3] = yhat_te[,1]+deltaCP* estimated_sds[[3]]
   # LCR, LCLR
@@ -236,10 +228,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   qL = as.array(test_ret_qc$yhat[,idx1]) -deltaCP
   qU = as.array(test_ret_qc$yhat[,idx2])+deltaCP
   coverages[5] =mean(ytest[,1]<= qU & ytest[,1] >=qL)
-  sdcov[5] = sd(ytest[,1]<= qU & ytest[,1] >=qL)
   lens[5] = mean(qU - qL)
-  Inflens[5] = mean(qU - qL == Inf)
-  sdlens[5] = sd(qU - qL)
   PIbands[,1,5] = qL
   PIbands[,2,5] = qU
   #quantile conformal + local
@@ -264,10 +253,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   qL = as.array(test_ret_qc$yhat[,idx1]) - deltaCP * estimated_sds[[3]]
   qU =  as.array(test_ret_qc$yhat[,idx2]) + deltaCP * estimated_sds[[3]]
   coverages[7] =mean(ytest[,1]<= qU & ytest[,1] >=qL)
-  sdcov[7] = sd(ytest[,1]<= qU & ytest[,1] >=qL)
   lens[7] = mean(qU - qL)
-  Inflens[7] = mean(qU - qL == Inf)
-  sdlens[7] = sd(qU - qL)
   PIbands[,1,7] = qL
   PIbands[,2,7] = qU
   tangent_cv =  cv_ret_var_qc$jacobians[,1,]
@@ -361,7 +347,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
 #'@import LCP
 #'@export
 LCPcompare0 <- function(xtrain, ytrain, xcalibration, ycalibration,
-                       xtest, ytest, alpha, 
+                       xtest, ytest, alpha = 0.05, 
                        quantiles = c(0.025, 0.05, 0.1, 0.9 ,0.95, 0.975,), 
                        nfolds = 3, random_state = 1,
                        save_path = NULL, print_out = 10, epochs = 50){
@@ -516,7 +502,7 @@ LCPcompare0 <- function(xtrain, ytrain, xcalibration, ycalibration,
 
 #' sim_data_generator_1D_example2 - generate 1D simulated data for example2
 #'@export
-sim_data_generator_1D_example2 <- function(sim_name, n = 1000, n0 = 1000, m = 1000, alpha){
+sim_data_generator_1D_example2 <- function(sim_name, n = 1000, n0 = 1000, m = 1000, alpha = 0.05){
   if(sim_name == "1D_setA"){
     #sin
     noise_generating = function(x){
@@ -563,7 +549,7 @@ sim_data_generator_1D_example2 <- function(sim_name, n = 1000, n0 = 1000, m = 10
 
 #' sim_data_generator_1D_example1 - generate 1D simulated data for example1
 #'@export
-sim_data_generator_1D_example1 <- function(sim_name, n = 1000, n0 = 1000, m = 1000, alpha){
+sim_data_generator_1D_example1 <- function(sim_name, n = 1000, n0 = 1000, m = 1000, alpha = 0.05){
   if(sim_name == "1D_setA"){
     #sin
     noise_generating = function(x){
@@ -607,5 +593,3 @@ sim_data_generator_1D_example1 <- function(sim_name, n = 1000, n0 = 1000, m = 10
               xcalibration = xcalibration, ycalibration = ycalibration,
               xtest = xtest, ytest = ytest, truePI = truePI))
 }
-
-
