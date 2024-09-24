@@ -12,7 +12,7 @@ library(LCP)
 #'@importFrom torch optim_adam
 #'@export
 LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
-                       xtest, ytest, alpha, 
+                       xtest, ytest, alpha = 0.1, 
                        quantiles = c(0.025, 0.05, 0.1, 0.9 ,0.95, 0.975,), 
                        nfolds = 3, random_state = 1,
                        save_path = NULL, print_out = 10, epochs = 50){
@@ -347,7 +347,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
 #'@import LCP
 #'@export
 LCPcompare0 <- function(xtrain, ytrain, xcalibration, ycalibration,
-                       xtest, ytest, alpha, 
+                       xtest, ytest, alpha = 0.1, 
                        quantiles = c(0.025, 0.05, 0.1, 0.9 ,0.95, 0.975,), 
                        nfolds = 3, random_state = 1,
                        save_path = NULL, print_out = 10, epochs = 50){
