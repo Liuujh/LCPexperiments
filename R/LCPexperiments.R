@@ -24,6 +24,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   coverages = rep(NA, 8)
   sdcov = rep(NA, 8)
   lens = rep(NA, 8)
+  median_lens = rep(NA, 8)
   sdlens = rep(NA, 8)
   Inflens = rep(NA, 8)
   names(coverages) <- names(lens)<- names(Inflens) <- c("CR", "LCR", "CLR", "LCLR", "CQR",   "LCQR", "CQLR", "LCQLR")
@@ -81,6 +82,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   #CR, CLR
   deltaCP = quantile(observed_sds[[2]] , 1-alpha)
   lens[1] = deltaCP * 2
+  median_lens[1] = deltaCP * 2
   sdlens[1] = sd(deltaCP * 2)
   Inflens[1] = mean(deltaCP == Inf)
   coverages[1] = mean(observed_sds[[3]]<=deltaCP)
@@ -90,6 +92,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   
   deltaCP =  quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha)
   lens[3] = mean(deltaCP*estimated_sds[[3]]*2)
+  median_lens[3] = median(deltaCP*estimated_sds[[3]]*2)
   sdlens[3] = sd(deltaCP*estimated_sds[[3]]*2)
   Inflens[3] = mean(deltaCP == Inf)
   coverages[3] = mean(observed_sds[[3]]<=(deltaCP * estimated_sds[[3]]))
@@ -140,6 +143,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   coverages[2] =mean(observed_sds[[3]]<=deltaLCP)
   sdcov[2] = sd(observed_sds[[3]]<=deltaLCP)
   lens[2] = mean(deltaLCP[deltaLCP< Inf])*2
+  median_lens[2] = median(deltaLCP[deltaLCP< Inf])*2
   sdlens[2] = sd(deltaLCP[deltaLCP< Inf])*2
   Inflens[2] = mean(deltaLCP== Inf)
   PIbands[,1,2] = yhat_te[,1]-deltaLCP
@@ -170,6 +174,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   coverages[4] =mean(observed_sds[[3]]<=(deltaLCP * estimated_sds[[3]]))
   sdcov[4] = sd(observed_sds[[3]]<=(deltaLCP * estimated_sds[[3]]))
   lens[4] = mean((deltaLCP * estimated_sds[[3]])[deltaLCP< Inf])*2
+  median_lens[4] = median((deltaLCP * estimated_sds[[3]])[deltaLCP< Inf])*2
   sdlens[4] = sd((deltaLCP * estimated_sds[[3]])[deltaLCP< Inf])*2
   Inflens[4] = mean(deltaLCP == Inf)
   
@@ -236,6 +241,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   coverages[5] = mean(ytest[,1]<= qU & ytest[,1] >=qL)
   sdcov[5] = sd(ytest[,1]<= qU & ytest[,1] >=qL)
   lens[5] = mean(qU - qL)
+  median_lens[5] = median(qU - qL)
   sdlens[5] = sd(qU - qL)
   Inflens[5] = mean(qU - qL == Inf)
   PIbands[,1,5] = qL
@@ -264,6 +270,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   coverages[7] = mean(ytest[,1]<= qU & ytest[,1] >=qL)
   sdcov[7] = sd(ytest[,1]<= qU & ytest[,1] >=qL)
   lens[7] = mean(qU - qL)
+  median_lens[7] = median(qU - qL)
   sdlens[7] = sd(qU - qL)
   Inflens[7] = mean(qU - qL == Inf)
   PIbands[,1,7] = qL
@@ -310,6 +317,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   coverages[6] =mean(ytest[,1]<= qU & ytest[,1] >=qL)
   sdcov[6] = sd(ytest[,1]<= qU & ytest[,1] >=qL)
   lens[6] = mean((qU - qL)[deltaLCP <Inf])
+  median_lens[6] = median((qU - qL)[deltaLCP <Inf])
   sdlens[6] = sd((qU - qL)[deltaLCP <Inf])
   Inflens[6] = mean(deltaLCP == Inf)
   PIbands[,1,6] = qL
@@ -339,11 +347,12 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   coverages[8] =mean(ytest[,1]<= qU & ytest[,1] >=qL)
   sdcov[8] = sd(ytest[,1]<= qU & ytest[,1] >=qL)
   lens[8] = mean((qU - qL)[deltaLCP <Inf])
+  median_lens[8] = median((qU - qL)[deltaLCP <Inf])
   sdlens[8] = sd((qU - qL)[deltaLCP <Inf])
   Inflens[8] = mean(deltaLCP == Inf)
   PIbands[,1,8] = qL
   PIbands[,2,8] = qU
-  return(list(coverages = coverages, lens = lens, Infpercent = Inflens,
+  return(list(coverages = coverages, lens = lens, median_lens = median_lens, Infpercent = Inflens,
               PIbands = PIbands, sdcov = sdcov, sdlens = sdlens))
 }
 
