@@ -96,7 +96,7 @@ learnerOptimizer <- R6Class(classname = 'LearnerOptmizer', list(
     self$full_loss_history = c()
   },
   
-  fit = function(x, y, epochs, batch_size, verbose = TRUE){
+  fit = function(x, y, epochs, batch_size, verbose = FALSE){
     model = self$model
     model = model$to(self$device)
     optimizer = self$optimizer_class(model$parameters)
