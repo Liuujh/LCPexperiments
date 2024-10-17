@@ -169,10 +169,6 @@ my_cv_evaluate_func <- function(x, y, num_classes, requires_grad, predict_net, s
                                     device = device)
     model0$eval()
     y1hat = predict_net(x = x1_tensor, model = model0)
-    print(paste("Fold:", k, "dim of yhat:", dim(yhat[foldid[[k]], ]), "dim of y1hat:", dim(y1hat)))
-    if (length(foldid[[k]]) != nrow(y1hat)) {
-        stop("Mismatch in length of foldid and y1hat.")
-    }
     yhat[foldid[[k]], ] = as.array(y1hat)
     if(requires_grad){
       x_jacobian = compute_jacobian_autograd(inputs = x1_tensor, outputs = y1hat)
