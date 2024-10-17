@@ -418,7 +418,7 @@ learnerOptimizer <- R6Class(classname = 'LearnerOptmizer', list(
     xtest = data$xtest
     ytest = data$ytest
     for(k in 1:self$nfolds){
-      print(paste0("###CV_fold: ", k))
+      # print(paste0("###CV_fold: ", k))
       if(!self$CV){
         xtrain_tensor =xtrain
         ytrain_tensor = ytrain
