@@ -126,7 +126,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   Vcv = observed_sds[[1]]
   order1 = order(Vcal)
   
-  myLCR = LCPmodule$new(H = Hlists$H[order1, order1], V = Vcal[order1], h = 2, alpha = alpha, type = "distance")
+  myLCR = LCPmodule$new(H = Hlists$H[order1, order1], V = Vcal[order1], h = 2, alpha = alpha, type = "distance", weights = weights)
   
   t1 = Sys.time()
   auto_ret = myLCR$LCP_auto_tune(V0 =Vcv, H0 =Hlists$Hcv, hs = hs, B = 2, delta =alpha/2, lambda = 1, trace = TRUE)
@@ -155,7 +155,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   Vcv = observed_sds[[1]]/estimated_sds[[1]]
   order1 = order(Vcal)
   
-  myLCR = LCPmodule$new(H = Hlists$H[order1, order1], V = Vcal[order1], h = 2, alpha = alpha, type = "distance")
+  myLCR = LCPmodule$new(H = Hlists$H[order1, order1], V = Vcal[order1], h = 2, alpha = alpha, type = "distance", weights = weights)
   
   t1 = Sys.time()
   auto_ret = myLCR$LCP_auto_tune(V0 =Vcv, H0 =Hlists$Hcv, hs = hs, B = 2, delta=alpha/2, lambda = 1, trace = TRUE)
