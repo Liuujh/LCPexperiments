@@ -11,8 +11,17 @@ library(LCP)
 #'@import LCP
 #'@importFrom torch optim_adam
 #'@export
+
+weighted_quantile = function(x, q, w) {
+    w = w / sum(w)
+    ordering = order(x)
+    emp_cdf = cumsum(w[ordering])
+    quantile = x[ordering][min(which(emp_cdf >= q))]
+    return(quantile)
+}
+
 LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
-                       xtest, ytest, alpha = 0.1, 
+                       xtest, ytest, weights, alpha = 0.1, 
                        quantiles = c(0.025, 0.05, 0.1, 0.9 ,0.95, 0.975,), 
                        nfolds = 3, random_state = 1,
                        save_path = NULL, print_out = 10, epochs = 50){
@@ -78,7 +87,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   estimated_sds[[3]] = sqrt(exp(as.array(test_ret_var$yhat[,1])))
 
   #CR, CLR
-  deltaCP = quantile(observed_sds[[2]] , 1-alpha)
+  deltaCP = weighted_quantile(observed_sds[[2]], 1-alpha, weights)
   lens[1] = deltaCP * 2
   median_lens[1] = deltaCP * 2
   Inflens[1] = mean(deltaCP == Inf)
