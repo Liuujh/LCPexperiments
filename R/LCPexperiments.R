@@ -22,10 +22,8 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   p = ncol(xtrain)
   loss_func = nn_mse_loss()
   coverages = rep(NA, 8)
-  sdcov = rep(NA, 8)
   lens = rep(NA, 8)
   median_lens = rep(NA, 8)
-  sdlens = rep(NA, 8)
   Inflens = rep(NA, 8)
   names(coverages) <- names(lens)<- names(Inflens) <- c("CR", "LCR", "CLR", "LCLR", "CQR",   "LCQR", "CQLR", "LCQLR")
   PIbands = array(0, dim = c(nrow(xtest),2,8))
@@ -83,20 +81,16 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   deltaCP = quantile(observed_sds[[2]] , 1-alpha)
   lens[1] = deltaCP * 2
   median_lens[1] = deltaCP * 2
-  sdlens[1] = sd(deltaCP * 2)
   Inflens[1] = mean(deltaCP == Inf)
   coverages[1] = mean(observed_sds[[3]]<=deltaCP)
-  sdcov[1] = sd(observed_sds[[3]]<=deltaCP)
   PIbands[,1,1] = yhat_te[,1]-deltaCP
   PIbands[,2,1] = yhat_te[,1]+deltaCP
   
   deltaCP =  quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha)
   lens[3] = mean(deltaCP*estimated_sds[[3]]*2)
   median_lens[3] = median(deltaCP*estimated_sds[[3]]*2)
-  sdlens[3] = sd(deltaCP*estimated_sds[[3]]*2)
   Inflens[3] = mean(deltaCP == Inf)
   coverages[3] = mean(observed_sds[[3]]<=(deltaCP * estimated_sds[[3]]))
-  sdcov[3] = sd(observed_sds[[3]]<=(deltaCP * estimated_sds[[3]]))
   PIbands[,1,3] = yhat_te[,1]-deltaCP* estimated_sds[[3]]
   PIbands[,2,3] = yhat_te[,1]+deltaCP* estimated_sds[[3]]
   # LCR, LCLR
@@ -141,10 +135,8 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   qL = yhat_te-deltaLCP
   qU = yhat_te+deltaLCP
   coverages[2] =mean(observed_sds[[3]]<=deltaLCP)
-  sdcov[2] = sd(observed_sds[[3]]<=deltaLCP)
   lens[2] = mean(deltaLCP[deltaLCP< Inf])*2
   median_lens[2] = median(deltaLCP[deltaLCP< Inf])*2
-  sdlens[2] = sd(deltaLCP[deltaLCP< Inf])*2
   Inflens[2] = mean(deltaLCP== Inf)
   PIbands[,1,2] = yhat_te[,1]-deltaLCP
   PIbands[,2,2] = yhat_te[,1]+deltaLCP
@@ -172,10 +164,8 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   qL = yhat_te-deltaLCP * estimated_sds[[3]]
   qU = yhat_te+deltaLCP * estimated_sds[[3]]
   coverages[4] =mean(observed_sds[[3]]<=(deltaLCP * estimated_sds[[3]]))
-  sdcov[4] = sd(observed_sds[[3]]<=(deltaLCP * estimated_sds[[3]]))
   lens[4] = mean((deltaLCP * estimated_sds[[3]])[deltaLCP< Inf])*2
   median_lens[4] = median((deltaLCP * estimated_sds[[3]])[deltaLCP< Inf])*2
-  sdlens[4] = sd((deltaLCP * estimated_sds[[3]])[deltaLCP< Inf])*2
   Inflens[4] = mean(deltaLCP == Inf)
   
   PIbands[,1,4] = yhat_te[,1]-deltaLCP* estimated_sds[[3]]
@@ -239,10 +229,8 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   qL = as.array(test_ret_qc$yhat[,idx1]) -deltaCP
   qU = as.array(test_ret_qc$yhat[,idx2])+deltaCP
   coverages[5] = mean(ytest[,1]<= qU & ytest[,1] >=qL)
-  sdcov[5] = sd(ytest[,1]<= qU & ytest[,1] >=qL)
   lens[5] = mean(qU - qL)
   median_lens[5] = median(qU - qL)
-  sdlens[5] = sd(qU - qL)
   Inflens[5] = mean(qU - qL == Inf)
   PIbands[,1,5] = qL
   PIbands[,2,5] = qU
@@ -268,10 +256,8 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   qL = as.array(test_ret_qc$yhat[,idx1]) - deltaCP * estimated_sds[[3]]
   qU =  as.array(test_ret_qc$yhat[,idx2]) + deltaCP * estimated_sds[[3]]
   coverages[7] = mean(ytest[,1]<= qU & ytest[,1] >=qL)
-  sdcov[7] = sd(ytest[,1]<= qU & ytest[,1] >=qL)
   lens[7] = mean(qU - qL)
   median_lens[7] = median(qU - qL)
-  sdlens[7] = sd(qU - qL)
   Inflens[7] = mean(qU - qL == Inf)
   PIbands[,1,7] = qL
   PIbands[,2,7] = qU
@@ -315,10 +301,8 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   qL = as.array(test_ret_qc$yhat[,idx1])-deltaLCP
   qU = as.array(test_ret_qc$yhat[,idx2])+deltaLCP
   coverages[6] =mean(ytest[,1]<= qU & ytest[,1] >=qL)
-  sdcov[6] = sd(ytest[,1]<= qU & ytest[,1] >=qL)
   lens[6] = mean((qU - qL)[deltaLCP <Inf])
   median_lens[6] = median((qU - qL)[deltaLCP <Inf])
-  sdlens[6] = sd((qU - qL)[deltaLCP <Inf])
   Inflens[6] = mean(deltaLCP == Inf)
   PIbands[,1,6] = qL
   PIbands[,2,6] = qU
@@ -345,15 +329,13 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   qL = as.array(test_ret_qc$yhat[,idx1])-deltaLCP * estimated_sds[[3]]
   qU = as.array(test_ret_qc$yhat[,idx2])+deltaLCP * estimated_sds[[3]]
   coverages[8] =mean(ytest[,1]<= qU & ytest[,1] >=qL)
-  sdcov[8] = sd(ytest[,1]<= qU & ytest[,1] >=qL)
   lens[8] = mean((qU - qL)[deltaLCP <Inf])
   median_lens[8] = median((qU - qL)[deltaLCP <Inf])
-  sdlens[8] = sd((qU - qL)[deltaLCP <Inf])
   Inflens[8] = mean(deltaLCP == Inf)
   PIbands[,1,8] = qL
   PIbands[,2,8] = qU
   return(list(coverages = coverages, lens = lens, median_lens = median_lens, Infpercent = Inflens,
-              PIbands = PIbands, sdcov = sdcov, sdlens = sdlens))
+              PIbands = PIbands))
 }
 
 
