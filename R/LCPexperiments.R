@@ -95,7 +95,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   PIbands[,1,1] = yhat_te[,1]-deltaCP
   PIbands[,2,1] = yhat_te[,1]+deltaCP
   
-  deltaCP =  quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha)
+  deltaCP = weighted_quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha, weights)
   lens[3] = mean(deltaCP*estimated_sds[[3]]*2)
   median_lens[3] = median(deltaCP*estimated_sds[[3]]*2)
   Inflens[3] = mean(deltaCP == Inf)
@@ -143,7 +143,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   deltaLCP = myLCR$band_V
   qL = yhat_te-deltaLCP
   qU = yhat_te+deltaLCP
-  coverages[2] =mean(observed_sds[[3]]<=deltaLCP)
+  coverages[2] = mean(observed_sds[[3]]<=deltaLCP)
   lens[2] = mean(deltaLCP[deltaLCP< Inf])*2
   median_lens[2] = median(deltaLCP[deltaLCP< Inf])*2
   Inflens[2] = mean(deltaLCP== Inf)
@@ -172,7 +172,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   deltaLCP = myLCR$band_V
   qL = yhat_te-deltaLCP * estimated_sds[[3]]
   qU = yhat_te+deltaLCP * estimated_sds[[3]]
-  coverages[4] =mean(observed_sds[[3]]<=(deltaLCP * estimated_sds[[3]]))
+  coverages[4] = mean(observed_sds[[3]]<=(deltaLCP * estimated_sds[[3]]))
   lens[4] = mean((deltaLCP * estimated_sds[[3]])[deltaLCP< Inf])*2
   median_lens[4] = median((deltaLCP * estimated_sds[[3]])[deltaLCP< Inf])*2
   Inflens[4] = mean(deltaLCP == Inf)
@@ -234,9 +234,9 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   V1cal = as.array(calibration_ret_qc$yhat[,idx1]) - ycalibration[,1]
   V2cal = ycalibration[,1] - as.array(calibration_ret_qc$yhat[,idx2])
   Vcal = ifelse(V1cal >=V2cal, V1cal, V2cal)
-  deltaCP = quantile(Vcal, .95)
-  qL = as.array(test_ret_qc$yhat[,idx1]) -deltaCP
-  qU = as.array(test_ret_qc$yhat[,idx2])+deltaCP
+  deltaCP = weighted_quantile(Vcal, 1-alpha, weights)
+  qL = as.array(test_ret_qc$yhat[,idx1]) - deltaCP
+  qU = as.array(test_ret_qc$yhat[,idx2]) + deltaCP
   coverages[5] = mean(ytest[,1]<= qU & ytest[,1] >=qL)
   lens[5] = mean(qU - qL)
   median_lens[5] = median(qU - qL)
@@ -261,9 +261,9 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   estimated_sds[[2]] = sqrt(exp(as.array(calibration_ret_var_qc$yhat[,1])))
   estimated_sds[[3]] = sqrt(exp(as.array(test_ret_var_qc$yhat[,1])))
   
-  deltaCP =  quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha)
+  deltaCP = weighted_quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha, weights)
   qL = as.array(test_ret_qc$yhat[,idx1]) - deltaCP * estimated_sds[[3]]
-  qU =  as.array(test_ret_qc$yhat[,idx2]) + deltaCP * estimated_sds[[3]]
+  qU = as.array(test_ret_qc$yhat[,idx2]) + deltaCP * estimated_sds[[3]]
   coverages[7] = mean(ytest[,1]<= qU & ytest[,1] >=qL)
   lens[7] = mean(qU - qL)
   median_lens[7] = median(qU - qL)
