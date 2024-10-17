@@ -169,7 +169,7 @@ my_cv_evaluate_func <- function(x, y, num_classes, requires_grad, predict_net, s
                                     device = device)
     model0$eval()
     y1hat = predict_net(x = x1_tensor, model = model0)
-    print(paste("Fold:", k, "Foldid length:", length(foldid[[k]]), "y1hat length:", nrow(y1hat)))
+    print(paste("Fold:", k, "dim of yhat:", dim(yhat[foldid[[k]], ]), "dim of y1hat:", dim(y1hat)))
     if (length(foldid[[k]]) != nrow(y1hat)) {
         stop("Mismatch in length of foldid and y1hat.")
     }
