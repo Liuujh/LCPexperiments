@@ -378,7 +378,7 @@ learnerOptimizer <- R6Class(classname = 'LearnerOptmizer', list(
     }
   },
   
-  fit = function(x, y, epochs, batch_size, print_out = 1,verbose = TRUE){
+  fit = function(x, y, epochs, batch_size, print_out = 1,verbose = FALSE){
     self$x = x
     self$y = y
     best_epoch = epochs
