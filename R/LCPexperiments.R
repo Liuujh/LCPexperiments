@@ -87,7 +87,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   estimated_sds[[3]] = sqrt(exp(as.array(test_ret_var$yhat[,1])))
 
   #CR, CLR
-  deltaCP = weighted_quantile(observed_sds[[2]], 1-alpha, weights)
+  deltaCP = weighted_quantile(observed_sds[[2]], 1-alpha, if (is.null(weights)) rep(1, length(observed_sds[[2]])) else weights)
   lens[1] = deltaCP * 2
   median_lens[1] = deltaCP * 2
   Inflens[1] = mean(deltaCP == Inf)
@@ -95,7 +95,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   PIbands[,1,1] = yhat_te[,1]-deltaCP
   PIbands[,2,1] = yhat_te[,1]+deltaCP
   
-  deltaCP = weighted_quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha, weights)
+  deltaCP = weighted_quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha, if (is.null(weights)) rep(1, length(observed_sds[[2]])) else weights)
   lens[3] = mean(deltaCP*estimated_sds[[3]]*2)
   median_lens[3] = median(deltaCP*estimated_sds[[3]]*2)
   Inflens[3] = mean(deltaCP == Inf)
@@ -234,7 +234,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   V1cal = as.array(calibration_ret_qc$yhat[,idx1]) - ycalibration[,1]
   V2cal = ycalibration[,1] - as.array(calibration_ret_qc$yhat[,idx2])
   Vcal = ifelse(V1cal >=V2cal, V1cal, V2cal)
-  deltaCP = weighted_quantile(Vcal, 1-alpha, weights)
+  deltaCP = weighted_quantile(Vcal, 1-alpha, if (is.null(weights)) rep(1, length(Vcal)) else weights)
   qL = as.array(test_ret_qc$yhat[,idx1]) - deltaCP
   qU = as.array(test_ret_qc$yhat[,idx2]) + deltaCP
   coverages[5] = mean(ytest[,1]<= qU & ytest[,1] >=qL)
@@ -261,7 +261,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   estimated_sds[[2]] = sqrt(exp(as.array(calibration_ret_var_qc$yhat[,1])))
   estimated_sds[[3]] = sqrt(exp(as.array(test_ret_var_qc$yhat[,1])))
   
-  deltaCP = weighted_quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha, weights)
+  deltaCP = weighted_quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha, if (is.null(weights)) rep(1, length(observed_sds[[2]])) else weights)
   qL = as.array(test_ret_qc$yhat[,idx1]) - deltaCP * estimated_sds[[3]]
   qU = as.array(test_ret_qc$yhat[,idx2]) + deltaCP * estimated_sds[[3]]
   coverages[7] = mean(ytest[,1]<= qU & ytest[,1] >=qL)
