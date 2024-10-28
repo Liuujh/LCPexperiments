@@ -34,7 +34,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   lens = rep(NA, 8)
   median_lens = rep(NA, 8)
   Inflens = rep(NA, 8)
-  names(coverages) <- names(lens)<- names(Inflens) <- c("CR", "LCR", "CLR", "LCLR", "CQR",   "LCQR", "CQLR", "LCQLR")
+  names(coverages) <- names(lens)<- names(Inflens) <- c("CR", "LCR", "CLR", "LCLR", "CQR", "LCQR", "CQLR", "LCQLR")
   PIbands = array(0, dim = c(nrow(xtest),2,8))
   synthetic_mse = learnerOptimizer$new(network_new = my_neuralnet, optimizer_class = optimizer_class,
                                        loss_type = "mse",
@@ -47,8 +47,8 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
                                        my_test_split_func = my_test_split_func,
                                        my_cv_split_func = my_cv_split_func,
                                        my_epoch_internal_train =my_epoch_internal_train)
-  synthetic_mse$fit(x = xtrain, y =ytrain, epochs = epochs, batch_size = batch_size , print_out = print_out)
-  requires_grad  =  F
+  synthetic_mse$fit(x = xtrain, y = ytrain, epochs = epochs, batch_size = batch_size , print_out = print_out)
+  requires_grad = F
   cv_ret_mse = synthetic_mse$cv_evaluate(my_predict_func = my_predict_func, my_cv_evaluate = my_cv_evaluate_func,
                                          num_classes = 1, requires_grad = requires_grad)
   yhat_cal = as.array(synthetic_mse$predict(xcalibration, my_predict_func = my_predict_func, requires_grad = requires_grad)$yhat)
@@ -87,15 +87,22 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   estimated_sds[[3]] = sqrt(exp(as.array(test_ret_var$yhat[,1])))
 
   #CR, CLR
-  deltaCP = weighted_quantile(observed_sds[[2]], 1-alpha, if (is.null(weights)) rep(1, length(observed_sds[[2]])) else weights)
+  if (is.null(weights)){
+      deltaCP = quantile(observed_sds[[2]] , 1-alpha)
+  } else {
+  deltaCP = weighted_quantile(observed_sds[[2]], 1-alpha, weights)
+  }
   lens[1] = deltaCP * 2
   median_lens[1] = deltaCP * 2
   Inflens[1] = mean(deltaCP == Inf)
   coverages[1] = mean(observed_sds[[3]]<=deltaCP)
   PIbands[,1,1] = yhat_te[,1]-deltaCP
   PIbands[,2,1] = yhat_te[,1]+deltaCP
-  
-  deltaCP = weighted_quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha, if (is.null(weights)) rep(1, length(observed_sds[[2]])) else weights)
+  if (is.null(weights)){
+      deltaCP = quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha)
+  } else {
+  deltaCP = weighted_quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha, weights)
+  }
   lens[3] = mean(deltaCP*estimated_sds[[3]]*2)
   median_lens[3] = median(deltaCP*estimated_sds[[3]]*2)
   Inflens[3] = mean(deltaCP == Inf)
@@ -129,7 +136,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   myLCR = LCPmodule$new(H = Hlists$H[order1, order1], V = Vcal[order1], h = 2, alpha = alpha, type = "distance", weights = weights)
   
   t1 = Sys.time()
-  auto_ret = myLCR$LCP_auto_tune(V0 =Vcv, H0 =Hlists$Hcv, hs = hs, B = 2, delta =alpha/2, lambda = 1, trace = TRUE)
+  auto_ret = myLCR$LCP_auto_tune(V0 = Vcv, H0 = Hlists$Hcv, hs = hs, B = 2, delta = alpha/2, lambda = 1, trace = TRUE)
   t2 = Sys.time()
   print("finish LCR auto-tuning")
   print(t2 - t1)
@@ -141,12 +148,12 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   myLCR$LCP_construction(Hnew = Hlists$Hnew[,order1], HnewT = Hlists$HnewT[order1,])
   
   deltaLCP = myLCR$band_V
-  qL = yhat_te-deltaLCP
-  qU = yhat_te+deltaLCP
-  coverages[2] = mean(observed_sds[[3]]<=deltaLCP)
-  lens[2] = mean(deltaLCP[deltaLCP< Inf])*2
+  qL = yhat_te - deltaLCP
+  qU = yhat_te + deltaLCP
+  coverages[2] = mean(observed_sds[[3]] <= deltaLCP)
+  lens[2] = mean(deltaLCP[deltaLCP < Inf])*2
   median_lens[2] = median(deltaLCP[deltaLCP< Inf])*2
-  Inflens[2] = mean(deltaLCP== Inf)
+  Inflens[2] = mean(deltaLCP == Inf)
   PIbands[,1,2] = yhat_te[,1]-deltaLCP
   PIbands[,2,2] = yhat_te[,1]+deltaLCP
   
@@ -233,14 +240,18 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   #quntile conformal
   V1cal = as.array(calibration_ret_qc$yhat[,idx1]) - ycalibration[,1]
   V2cal = ycalibration[,1] - as.array(calibration_ret_qc$yhat[,idx2])
-  Vcal = ifelse(V1cal >=V2cal, V1cal, V2cal)
-  deltaCP = weighted_quantile(Vcal, 1-alpha, if (is.null(weights)) rep(1, length(Vcal)) else weights)
+  Vcal = ifelse(V1cal >= V2cal, V1cal, V2cal)
+  if (is.null(weights)){
+      deltaCP = quantile(Vcal, 1-alpha)
+  } else {
+      deltaCP = weighted_quantile(Vcal, 1-alpha, weights)
+  }
   qL = as.array(test_ret_qc$yhat[,idx1]) - deltaCP
   qU = as.array(test_ret_qc$yhat[,idx2]) + deltaCP
   coverages[5] = mean(ytest[,1]<= qU & ytest[,1] >=qL)
   lens[5] = mean(qU - qL)
   median_lens[5] = median(qU - qL)
-  Inflens[5] = mean(qU - qL == Inf)
+  Inflens[5] = mean( (qU - qL) == Inf)
   PIbands[,1,5] = qL
   PIbands[,2,5] = qU
   #quantile conformal + local
@@ -260,8 +271,12 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   estimated_sds[[1]] =  sqrt(exp(cv_ret_var_qc$yhat[,1])); 
   estimated_sds[[2]] = sqrt(exp(as.array(calibration_ret_var_qc$yhat[,1])))
   estimated_sds[[3]] = sqrt(exp(as.array(test_ret_var_qc$yhat[,1])))
-  
-  deltaCP = weighted_quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha, if (is.null(weights)) rep(1, length(observed_sds[[2]])) else weights)
+    
+  if (is.null(weights)) {
+      deltaCP = quantile(observed_sds[[2]]/estimated_sds[[2]], 1-alpha)
+  } else {
+      deltaCP = weighted_quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha, weights)
+  }
   qL = as.array(test_ret_qc$yhat[,idx1]) - deltaCP * estimated_sds[[3]]
   qU = as.array(test_ret_qc$yhat[,idx2]) + deltaCP * estimated_sds[[3]]
   coverages[7] = mean(ytest[,1]<= qU & ytest[,1] >=qL)
