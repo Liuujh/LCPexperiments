@@ -144,8 +144,9 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   myLCR$h = auto_ret$h
   
   myLCR$lower_idx()
-  myLCR$cumsum_unnormalized()
-  myLCR$LCP_construction(Hnew = Hlists$Hnew[,order1], HnewT = Hlists$HnewT[order1,])
+  # myLCR$cumsum_unnormalized()
+  # myLCR$LCP_construction(Hnew = Hlists$Hnew[,order1], HnewT = Hlists$HnewT[order1,])
+  myLCR$cumsum_unnormalized_LCP_construction(Hnew = Hlists$Hnew[,order1], HnewT = Hlists$HnewT[order1,])
   
   deltaLCP = myLCR$band_V
   qL = yhat_te - deltaLCP
@@ -173,8 +174,9 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   myLCR$h = auto_ret$h
   
   myLCR$lower_idx()
-  myLCR$cumsum_unnormalized()
-  myLCR$LCP_construction(Hnew = Hlists$Hnew[,order1], HnewT = Hlists$HnewT[order1,])
+  # myLCR$cumsum_unnormalized()
+  # myLCR$LCP_construction(Hnew = Hlists$Hnew[,order1], HnewT = Hlists$HnewT[order1,])
+  myLCR$cumsum_unnormalized_LCP_construction(Hnew = Hlists$Hnew[,order1], HnewT = Hlists$HnewT[order1,])
   
   deltaLCP = myLCR$band_V
   qL = yhat_te-deltaLCP * estimated_sds[[3]]
@@ -318,8 +320,9 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   myLCR$h = auto_ret$h
   
   myLCR$lower_idx()
-  myLCR$cumsum_unnormalized()
-  myLCR$LCP_construction(Hnew = Hlists$Hnew[,order1], HnewT = Hlists$HnewT[order1,])
+  # myLCR$cumsum_unnormalized()
+  # myLCR$LCP_construction(Hnew = Hlists$Hnew[,order1], HnewT = Hlists$HnewT[order1,])
+  myLCR$cumsum_unnormalized_LCP_construction(Hnew = Hlists$Hnew[,order1], HnewT = Hlists$HnewT[order1,])
   
   deltaLCP = myLCR$band_V
   qL = as.array(test_ret_qc$yhat[,idx1])-deltaLCP
@@ -346,8 +349,9 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   myLCR$h = auto_ret$h
   
   myLCR$lower_idx()
-  myLCR$cumsum_unnormalized()
-  myLCR$LCP_construction(Hnew = Hlists$Hnew[,order1], HnewT = Hlists$HnewT[order1,])
+  # myLCR$cumsum_unnormalized()
+  # myLCR$LCP_construction(Hnew = Hlists$Hnew[,order1], HnewT = Hlists$HnewT[order1,])
+  myLCR$cumsum_unnormalized_LCP_construction(Hnew = Hlists$Hnew[,order1], HnewT = Hlists$HnewT[order1,])
   
   deltaLCP = myLCR$band_V
   qL = as.array(test_ret_qc$yhat[,idx1])-deltaLCP * estimated_sds[[3]]
