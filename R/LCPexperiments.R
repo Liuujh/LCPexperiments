@@ -90,7 +90,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   if (is.null(weights)){
       deltaCP = quantile(observed_sds[[2]] , 1-alpha)
   } else {
-  deltaCP = weighted_quantile(observed_sds[[2]], 1-alpha, weights)
+  deltaCP = weighted_quantile(observed_sds[[2]], 1-alpha, weights[1:nrow(xcalibration)])
   }
   lens[1] = deltaCP * 2
   median_lens[1] = deltaCP * 2
@@ -101,7 +101,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   if (is.null(weights)){
       deltaCP = quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha)
   } else {
-  deltaCP = weighted_quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha, weights)
+  deltaCP = weighted_quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha, weights[1:nrow(xcalibration)])
   }
   lens[3] = mean(deltaCP*estimated_sds[[3]]*2)
   median_lens[3] = median(deltaCP*estimated_sds[[3]]*2)
@@ -133,7 +133,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   Vcv = observed_sds[[1]]
   order1 = order(Vcal)
   
-  myLCR = LCPmodule$new(H = Hlists$H[order1, order1], V = Vcal[order1], h = 2, alpha = alpha, type = "distance", weights = weights[order1])
+  myLCR = LCPmodule$new(H = Hlists$H[order1, order1], V = Vcal[order1], h = 2, alpha = alpha, type = "distance", weights = weights)
   
   t1 = Sys.time()
   auto_ret = myLCR$LCP_auto_tune(V0 = Vcv, H0 = Hlists$Hcv, hs = hs, B = 2, delta = alpha/2, lambda = 1, trace = TRUE)
@@ -163,7 +163,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   Vcv = observed_sds[[1]]/estimated_sds[[1]]
   order1 = order(Vcal)
   
-  myLCR = LCPmodule$new(H = Hlists$H[order1, order1], V = Vcal[order1], h = 2, alpha = alpha, type = "distance", weights = weights[order1])
+  myLCR = LCPmodule$new(H = Hlists$H[order1, order1], V = Vcal[order1], h = 2, alpha = alpha, type = "distance", weights = weights)
   
   t1 = Sys.time()
   auto_ret = myLCR$LCP_auto_tune(V0 =Vcv, H0 =Hlists$Hcv, hs = hs, B = 2, delta=alpha/2, lambda = 1, trace = TRUE)
@@ -246,7 +246,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   if (is.null(weights)){
       deltaCP = quantile(Vcal, 1-alpha)
   } else {
-      deltaCP = weighted_quantile(Vcal, 1-alpha, weights)
+      deltaCP = weighted_quantile(Vcal, 1-alpha, weights[1:nrow(xcalibration)])
   }
   qL = as.array(test_ret_qc$yhat[,idx1]) - deltaCP
   qU = as.array(test_ret_qc$yhat[,idx2]) + deltaCP
@@ -277,7 +277,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   if (is.null(weights)) {
       deltaCP = quantile(observed_sds[[2]]/estimated_sds[[2]], 1-alpha)
   } else {
-      deltaCP = weighted_quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha, weights)
+      deltaCP = weighted_quantile(observed_sds[[2]]/estimated_sds[[2]] , 1-alpha, weights[1:nrow(xcalibration)])
   }
   qL = as.array(test_ret_qc$yhat[,idx1]) - deltaCP * estimated_sds[[3]]
   qU = as.array(test_ret_qc$yhat[,idx2]) + deltaCP * estimated_sds[[3]]
@@ -309,7 +309,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   Vcv = observed_sds[[1]]#/estimated_sds[[1]]
   order1 = order(Vcal)
   
-  myLCR = LCPmodule$new(H = Hlists$H[order1, order1], V = Vcal[order1], h = 2, alpha = alpha, type = "distance", weights = weights[order1])
+  myLCR = LCPmodule$new(H = Hlists$H[order1, order1], V = Vcal[order1], h = 2, alpha = alpha, type = "distance", weights = weights)
   
   t1 = Sys.time()
   auto_ret = myLCR$LCP_auto_tune(V0 =Vcv, H0 =Hlists$Hcv, hs = hs, B = 2, delta =alpha/2, lambda = 1, trace = TRUE)
@@ -338,7 +338,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   Vcv = observed_sds[[1]]/estimated_sds[[1]]
   order1 = order(Vcal)
   
-  myLCR = LCPmodule$new(H = Hlists$H[order1, order1], V = Vcal[order1], h = 2, alpha = alpha, type = "distance", weights = weights[order1])
+  myLCR = LCPmodule$new(H = Hlists$H[order1, order1], V = Vcal[order1], h = 2, alpha = alpha, type = "distance", weights = weights)
   
   t1 = Sys.time()
   auto_ret = myLCR$LCP_auto_tune(V0 =Vcv, H0 =Hlists$Hcv, hs = hs, B = 2, delta =alpha/2, lambda = 1, trace = TRUE)
