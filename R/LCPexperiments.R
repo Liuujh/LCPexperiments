@@ -132,7 +132,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   Vcal = observed_sds[[2]]
   Vcv = observed_sds[[1]]
   order1 = order(Vcal)
-  weights = c(weights[1:nrow(xcalibration)][order1],weights[(nrow(xcalibration)+1):length(weights)])
+  # weights = c(weights[1:nrow(xcalibration)][order1],weights[(nrow(xcalibration)+1):length(weights)])
   myLCR = LCPmodule$new(H = Hlists$H[order1, order1], V = Vcal[order1], h = 2, alpha = alpha, type = "distance", weights = weights)
   
   t1 = Sys.time()
@@ -162,7 +162,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   Vcal = observed_sds[[2]]/estimated_sds[[2]]
   Vcv = observed_sds[[1]]/estimated_sds[[1]]
   order1 = order(Vcal)
-  weights = c(weights[1:nrow(xcalibration)][order1],weights[(nrow(xcalibration)+1):length(weights)])
+  # weights = c(weights[1:nrow(xcalibration)][order1],weights[(nrow(xcalibration)+1):length(weights)])
   myLCR = LCPmodule$new(H = Hlists$H[order1, order1], V = Vcal[order1], h = 2, alpha = alpha, type = "distance", weights = weights)
   
   t1 = Sys.time()
@@ -308,7 +308,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   Vcal = observed_sds[[2]]#/estimated_sds[[2]]
   Vcv = observed_sds[[1]]#/estimated_sds[[1]]
   order1 = order(Vcal)
-  weights = c(weights[1:nrow(xcalibration)][order1],weights[(nrow(xcalibration)+1):length(weights)])
+  # weights = c(weights[1:nrow(xcalibration)][order1],weights[(nrow(xcalibration)+1):length(weights)])
   myLCR = LCPmodule$new(H = Hlists$H[order1, order1], V = Vcal[order1], h = 2, alpha = alpha, type = "distance", weights = weights)
   
   t1 = Sys.time()
@@ -337,7 +337,7 @@ LCPcompare <- function(xtrain, ytrain, xcalibration, ycalibration,
   Vcal = observed_sds[[2]]/estimated_sds[[2]]
   Vcv = observed_sds[[1]]/estimated_sds[[1]]
   order1 = order(Vcal)
-  weights = c(weights[1:nrow(xcalibration)][order1],weights[(nrow(xcalibration)+1):length(weights)])
+  # weights = c(weights[1:nrow(xcalibration)][order1],weights[(nrow(xcalibration)+1):length(weights)])
   myLCR = LCPmodule$new(H = Hlists$H[order1, order1], V = Vcal[order1], h = 2, alpha = alpha, type = "distance", weights = weights)
   
   t1 = Sys.time()
